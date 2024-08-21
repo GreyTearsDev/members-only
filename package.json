@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./app.js",
     "debug": "nodemon --inspect ./app.js",
-    "populatedb": "node populate.js"
+    "populatedb": "node ./db/populate.js"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,8 @@
     "express-session": "^1.18.0",
     "express-validator": "^7.2.0",
     "http-errors": "^2.0.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
     "pg": "^8.12.0"
   }
 }
