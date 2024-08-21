@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <header>
+        <div>
+          <h1>
+            <a href="/">Ranticulous <span>👁👄👁</span></a>
+          </h1>
+        </div>
+    </header>
+    <aside>
+      <%- include("./sidebar") %>
+    </aside>
+    <main>
+      <%- body %>
+    </main>
+    <footer>
 
+      <p> Copyright©Tirso Samalungo (<a
+                href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
+        </p>
+    </footer>
+  </body>
+</html>

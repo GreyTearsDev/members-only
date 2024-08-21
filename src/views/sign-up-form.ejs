@@ -1,0 +1,26 @@
+<h1>Sign up</h1>
+<form action="/signup" method="post">
+    <section>
+        <label for="username">* Username</label>
+        <input id="username" name="username" type="text" maxLength=40 autocomplete="username" required>
+    </section>
+    <section>
+        <label for="first_name">* First name</label>
+        <input id="first_name" name="first_name" maxLength=40 type="text" autocomplete="first_name" required>
+    </section>
+    <section>
+        <label for="last_name">* Last name</label>
+        <input id="last_name" name="last_name" maxLength=40 type="text" autocomplete="last_name" required>
+    </section>
+    <section>
+        <label for="new_password">* Password</label>
+        <input id="new_password" name="password" type="password" autocomplete="new-password" required>
+    </section>
+    <section>
+        <label for="new_password_confirmation">* Confirm password</label>
+        <input id="new_password_confirmation" name="password" type="password"  required>
+    </section>
+  </fieldset>
+
+    <button type="submit">Sign up</button>
+</form>
