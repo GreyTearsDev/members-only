@@ -1,4 +1,4 @@
-const { argv, argv0 } = require("node:process");
+const { argv } = require("node:process");
 const { Pool } = require("pg");
 
 const usersTable = `
