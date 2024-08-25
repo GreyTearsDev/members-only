@@ -1,6 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const asyncHandler = require("express-async-handler");
+const colNames = require("../util/colNames");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
@@ -42,6 +43,9 @@ exports.sign_up_post = [
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       password: req.body.password,
+      //by default, new users are neither members nor admins
+      is_admin: false,
+      is_member: false,
     };
 
     if (!errors.isEmpty()) {
@@ -57,7 +61,7 @@ exports.sign_up_post = [
     }
 
     // Check if a user with the same username already exists
-    const existingUser = await db.getUserByUsername(user.username);
+    const existingUser = await db.getUserBy(colNames.USERNAME, user.username);
 
     if (existingUser) {
       const errMessage = `Username '${user.username}' is already taken. Try another one.`;
