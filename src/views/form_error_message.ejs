@@ -1,1 +1,12 @@
-
+  <% if ( errors && errors.length > 0) { %>
+    <div>
+      <ul>
+        <% errors.forEach(error => { %>
+          <li>
+            <span>⚠️</span>
+            <%= error.msg %>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+<% } %>
