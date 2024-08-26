@@ -2,9 +2,11 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const asyncHandler = require("express-async-handler");
 const colNames = require("../util/colNames");
+const passport = require("passport");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
+  console.log(req.user);
   res.render("sign-up-form", {
     title: "Sign up",
     errors: undefined,
@@ -76,4 +78,40 @@ exports.sign_up_post = [
     await db.insertUser(user);
     res.redirect("/");
   }),
+];
+
+// handler for displaying the log-in form to the user
+exports.log_in_get = (req, res, next) => {
+  res.render("log_in_form", {
+    title: "Log in",
+    errors: undefined,
+    username: undefined,
+    password: undefined,
+  });
+};
+
+// handler for validating and logging the user
+exports.log_in_post = [
+  body("username", "Invalid username").trim().notEmpty().escape(),
+  body("password", "Invalid password").trim().notEmpty().escape(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      console.error("there was an error");
+      res.render("log_in_form", {
+        title: "Oops... Something went wrong!",
+        username: req.body.username,
+        errors: errors.array(),
+      });
+      return;
+    }
+    console.log("no errors");
+
+    passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/user/log-in",
+    })(req, res, next);
+  },
 ];
