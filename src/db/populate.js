@@ -1,6 +1,18 @@
 const { argv } = require("node:process");
 const { Pool } = require("pg");
 
+const createUserSessions = `
+CREATE TABLE "user_sessions" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "user_sessions" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "user_sessions" ("expire");
+`;
 const usersTable = `
     CREATE TABLE IF NOT EXISTS users(
       id SERIAL PRIMARY KEY,
@@ -8,10 +20,17 @@ const usersTable = `
       first_name VARCHAR(40) NOT NULL,
       last_name VARCHAR(40) NOT NULL,
       password TEXT NOT NULL,
-      name TEXT GENERATED ALWAYS  AS (first_name || ' ' || last_name) STORED,
-      is_admin BOOL
+      is_admin BOOL,
+      is_member BOOL
     )
   `;
+
+const secretPasswordsTable = `
+  CREATE TABLE IF NOT EXISTS secret_passwords(
+    admin VARCHAR(20) NOT NULL,
+    membership VARCHAR(20) NOT NULL
+  );
+`;
 
 const messagesTable = `
     CREATE TABLE IF NOT EXISTS messages(
@@ -24,10 +43,15 @@ const messagesTable = `
   `;
 
 const createDefaultUsers = `
-  INSERT INTO users(username, first_name, last_name, password, is_admin)
+  INSERT INTO users(username, first_name, last_name, password, is_admin, is_member)
   VALUES 
-    ('greytearsdev', 'Tirso', 'Samalungo', 'mycoolpass', true),
-    ('coolguy', 'Josh', 'Doe', 'notsocoolpass', false);
+    ('greytearsdev', 'Tirso', 'Samalungo', 'mycoolpass', true, true),
+    ('coolguy', 'Josh', 'Doe', 'notsocoolpass', false, false);
+`;
+
+const createSecretPasswords = `
+  INSERT INTO secret_passwords(admin, membership)
+  VALUES ('cooladmin', 'coolmember');
 `;
 
 const createDefaultMessages = `
@@ -37,9 +61,9 @@ const createDefaultMessages = `
           'Unsalted French Fries are Morally Wrong: A Rant 🍟', 
           'Alright, hear me out. Unsalted French fries are an absolute travesty, and I’m here to make the case. 
           
-          First off, the potato. This humble spud goes through so much—peeled, sliced, and deep-fried in boiling oil—all to reach its final form: the glorious French fry. But then, some cruel soul decides to withhold the salt? That’s just wrong. It’s like taking a victory lap and refusing to break the tape at the finish line. A bland, soulless chunk of potato. It’s a betrayal, plain and simple. 
+          This humble spud goes through so much—peeled, sliced, and deep-fried in boiling oil—all to reach its final form: the glorious French fry. But then, some cruel soul decides to withhold the salt? That’s just wrong. A bland, soulless chunk of potato. It’s a betrayal, plain and simple. 
 
-          And let’s not forget the unspoken social contract here. When you order fries, it’s universally understood that they’ll be salted. It’s tradition! Unsalted fries are a slap in the face to generations of fry enthusiasts.
+          When you order fries, it’s universally understood that they’ll be salted. It’s tradition! Unsalted fries are a slap in the face to generations of fry enthusiasts.
           
           Salt those fries, people! 🍟✨'
         );
@@ -58,9 +82,17 @@ async function main() {
     console.log("-----------Creating tables---------------");
     await pool.query(usersTable); // creates a table named `users`
     await pool.query(messagesTable); // creates a table named `messages`
+    await pool.query(secretPasswordsTable);
+
+    console.log("-----------Creating user_sessions table---------------\n");
+    await pool.query(createUserSessions);
+
     console.log("-----------Creating default users---------------");
     await pool.query(createDefaultUsers);
     console.log("-----------Creating default messages---------------\n");
+    await pool.query(createSecretPasswords);
+    console.log("-----------Creating secret passwords---------------\n");
+
     await pool.query(createDefaultMessages);
     console.log("-----The database has been successfully populated------");
   } catch (e) {
