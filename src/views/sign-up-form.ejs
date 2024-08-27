@@ -1,26 +1,110 @@
-<h1>Sign up</h1>
-<form action="/signup" method="post">
-    <section>
-        <label for="username">* Username</label>
-        <input id="username" name="username" type="text" maxLength=40 autocomplete="username" required>
-    </section>
-    <section>
-        <label for="first_name">* First name</label>
-        <input id="first_name" name="first_name" maxLength=40 type="text" autocomplete="first_name" required>
-    </section>
-    <section>
-        <label for="last_name">* Last name</label>
-        <input id="last_name" name="last_name" maxLength=40 type="text" autocomplete="last_name" required>
-    </section>
-    <section>
-        <label for="new_password">* Password</label>
-        <input id="new_password" name="password" type="password" autocomplete="new-password" required>
-    </section>
-    <section>
-        <label for="new_password_confirmation">* Confirm password</label>
-        <input id="new_password_confirmation" name="password" type="password"  required>
-    </section>
-  </fieldset>
+<form 
+  action="/user/sign-up" 
+  method="POST"
+  class="
+    max-w-md
+    mx-auto
+    p-4
+    bg-white
+    shadow-md
+    rounded-md
+  ">
+    <%- include("./required_fields_warning")%>
+    <fieldset class="border border-gray-300 rounded p-4 mb-6">
+        <legend class="text-lg font-semibold text-gray-700">Sign up</legend>
 
-    <button type="submit">Sign up</button>
+        <%- include("partials/form_label", { 
+          labelInfo: { 
+            for: "username", 
+            text: "* Username" 
+          } 
+        }) %>
+
+        <%- include("partials/form_input", { 
+          inputInfo:{
+            type: "text",
+            id: "username",
+            name: "username",
+            placeholder: "username",
+            value: username || '', 
+            required: "required"
+          }
+        })%>
+
+        <%- include("partials/form_label", { 
+          labelInfo: { 
+            for: "first_name", 
+            text: "* First name" 
+          } 
+        }) %>
+
+        <%- include("partials/form_input", { 
+          inputInfo:{
+            type: "text",
+            id: "first_name",
+            name: "first_name",
+            maxLength: 40,
+            autocomplete: "first_name",
+            value: first_name || '', 
+            required: "required"
+          }
+        })%>
+
+        <%- include("partials/form_label", { 
+          labelInfo: { 
+            for: "last_name", 
+            text: "* Last name" 
+          } 
+        }) %>
+
+        <%- include("partials/form_input", { 
+          inputInfo:{
+            type: "text",
+            id: "last_name",
+            name: "last_name",
+            maxLength: 40,
+            autocomplete: "last_name",
+            value: last_name || '', 
+            required: "required"
+          }
+        })%>
+
+        <%- include("partials/form_label", { 
+          labelInfo: { 
+            for: "password", 
+            text: "* Password" 
+          } 
+        }) %>
+
+        <%- include("partials/form_input", { 
+          inputInfo:{
+            type: "password",
+            id: "password",
+            name: "password",
+            value: password || '',
+            required: "required"
+          }
+        })%>
+
+        <%- include("partials/form_label", { 
+          labelInfo: { 
+            for: "password_confirmation", 
+            text: "* Confirm password" 
+          } 
+        }) %>
+
+        <%- include("partials/form_input", { 
+          inputInfo:{
+            type: "password",
+            id: "password_confirmation",
+            name: "password_confirmation",
+            required: "required"
+          }
+        })%>
+
+      </fieldset>
+
+    <%- include("partials/form_button", { btnInfo: { text: "Sign up", color: "pink", type: "submit" } })%>
+    <%- include("form_error_message", {errors: errors})%>
 </form>
+
