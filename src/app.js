@@ -110,7 +110,7 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   console.log(err);
-  res.render("error", { title: "Something went wrong", error: err });
+  res.render("error", { code: 500, title: "Something blew up", error: err });
 });
 
 /**
