@@ -15,9 +15,9 @@
         </div>
         
         <% if (currentUser) { %>
-          <a href="/user/log-out"><button>Log out</button></a>
+          <a href="/user/log-out"><%-include("partials/form_button", {btnInfo: {text: "Log out", color: "pink" }})%></a>
         <% } else { %>
-          <a href="/user/log-in"><button>Log in</button></a>
+            <a href="/user/log-in"><%-include("partials/form_button", {btnInfo: {text: "Log in", color: "pink" }})%></a>
         <% } %>
     </header>
 
