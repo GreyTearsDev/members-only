@@ -101,6 +101,26 @@ exports.removePrevilege = async (userId, previlegeType) => {
         break;
     }
   } catch (e) {
-    throw new Error("Something when wrong while granting previleges: ", e);
+    throw new Error("Something when wrong while removing previleges: ", e);
+  }
+};
+
+exports.getSecretPassword = async (columnName) => {
+  const queryText = `
+    SELECT password FROM secret_passwords WHERE name = $1;
+  `;
+  let result;
+
+  try {
+    switch (columnName) {
+      case colNames.PASS_ADMIN:
+        result = await pool.query(queryText, [columnName]);
+        return result.rows[0].password;
+      case colNames.PASS_MEMBER:
+        result = await pool.query(queryText, [columnName]);
+        return result.rows[0].password;
+    }
+  } catch (e) {
+    throw new Error("Something when wrong while fetching secret password: ", e);
   }
 };
