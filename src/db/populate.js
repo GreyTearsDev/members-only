@@ -28,8 +28,8 @@ const usersTable = `
 
 const secretPasswordsTable = `
   CREATE TABLE IF NOT EXISTS secret_passwords(
-    admin TEXT NOT NULL,
-    membership TEXT NOT NULL
+    name TEXT NOT NULL,
+    password TEXT NOT NULL
   );
 `;
 
@@ -77,8 +77,8 @@ async function main() {
     const admin_pass_hashed = await bcrypt.hash("cooladmin", 10);
     const member_pass_hashed = await bcrypt.hash("coolmember", 10);
     const createSecretPasswords = `
-    INSERT INTO secret_passwords(admin, membership)
-    VALUES ('${admin_pass_hashed}', '${member_pass_hashed}');
+    INSERT INTO secret_passwords(name, password)
+    VALUES ('admin', '${admin_pass_hashed}'), ('member', '${member_pass_hashed}');
   `;
     console.log("-----------Creating tables---------------");
     await pool.query(usersTable); // creates a table named `users`
@@ -90,10 +90,10 @@ async function main() {
 
     console.log("-----------Creating default users---------------");
     await pool.query(createDefaultUsers);
-    console.log("-----------Creating default messages---------------\n");
-    await pool.query(createSecretPasswords);
     console.log("-----------Creating secret passwords---------------\n");
+    await pool.query(createSecretPasswords);
 
+    console.log("-----------Creating default messages---------------\n");
     await pool.query(createDefaultMessages);
     console.log("-----The database has been successfully populated------");
   } catch (e) {
