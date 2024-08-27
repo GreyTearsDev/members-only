@@ -7,33 +7,11 @@
     <link rel="stylesheet" href="/main.css">
   </head>
   <body>
-    <header>
-        <div>
-          <h1>
-            <a href="/">Ranticulous <span>👁👄👁</span></a>
-          </h1>
-        </div>
-        
-        <% if (currentUser) { %>
-          <a href="/user/log-out"><%-include("partials/form_button", {btnInfo: {text: "Log out", color: "pink" }})%></a>
-        <% } else { %>
-            <a href="/user/log-in"><%-include("partials/form_button", {btnInfo: {text: "Log in", color: "pink" }})%></a>
-        <% } %>
-    </header>
-
-    <aside>
-      <%- include("./sidebar") %>
-    </aside>
-
+    <%- include("./header")%>
+    <%- include("./sidebar") %>
     <main>
       <%- body %>
     </main>
-
-    <footer>
-      <p> Copyright©Tirso Samalungo (<a
-                href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
-        </p>
-    </footer>
-
+    <%- include("./footer")%>
   </body>
 </html>

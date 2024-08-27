@@ -1,16 +1,51 @@
-<div class="bg-white shadow-md rounded-md p-4 w-64">
+<aside 
+  class="
+    bg-white 
+    shadow-md 
+    rounded-md 
+    p-4 
+    w-64
+  "
+>
   <ul class="space-y-4">
     <li>
-      <a href="/" class="block text-gray-700 hover:text-gray-900 font-semibold py-2 px-4 rounded hover:bg-gray-100 transition">
+      <a 
+        href="/" 
+        class="
+          block 
+          text-gray-700 
+          hover:text-gray-900 
+          font-semibold 
+          py-2 
+          px-4 
+          rounded 
+          hover:bg-gray-100 
+          transition
+        "
+      >
         🏠 Home
       </a>
     </li>
+    
     <% if (currentUser) { %>
       <li>
-        <a href="/user/previleges" class="block text-gray-700 hover:text-gray-900 font-semibold py-2 px-4 rounded hover:bg-gray-100 transition">
-         🔐 Get Privileges 
+        <a 
+          href="/user/previleges" 
+          class="
+            block 
+            text-gray-700 
+            hover:text-gray-900 
+            font-semibold 
+            py-2 
+            px-4 
+            rounded 
+            hover:bg-gray-100 
+            transition
+          "
+        >
+          🔐 Get Privileges 
         </a>
       </li>
     <% } %>
   </ul>
-</div>
+</aside>
