@@ -1,0 +1,26 @@
+<% if (!inputInfo) { %>
+  <% throw new Error("Must provide 'inputInfo' object") %>
+<% } %>
+
+<% let attributes = "" %>
+
+<% for (const attribute in inputInfo) { %>
+  <% attributes += `${attribute}="${inputInfo[attribute]}" ` %>
+<% } %>
+
+<input 
+  <%- attributes %>
+  class="
+    mt-1 
+    block 
+    w-full 
+    px-3 
+    py-2 
+    border 
+    border-gray-300 
+    rounded-md 
+    shadow-sm 
+    focus:outline-none 
+    focus:ring-indigo-500 
+    focus:border-indigo-500
+  ">
