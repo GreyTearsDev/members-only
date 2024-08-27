@@ -13,7 +13,7 @@
     <fieldset class="border border-gray-300 rounded p-4 mb-6">
       <legend class="text-lg font-semibold text-gray-700">Become a Member</legend>
       <%- include("partials/form_label", { labelInfo: { for: "member", text: "Password" }})%>
-      <%- include("partials/form_input", { inputInfo: { type: "text", id: "member", name: "member"} })%>
+      <%- include("partials/form_input", { inputInfo: { type: "password", id: "member", name: "member"} })%>
       <%- include("partials/form_secret_password", {password: "coolmember"})%>
     </fieldset>
 
@@ -22,8 +22,8 @@
 
     <fieldset class="border border-gray-300 rounded p-4 mb-6">
       <legend class="text-lg font-semibold text-gray-700">Become an Administrator</legend>
-      <%- include("partials/form_label", { labelInfo: { for: "member", text: "Password" }})%>
-      <%- include("partials/form_input", { inputInfo: { type: "text", id: "admin", name: "admin"} })%>
+      <%- include("partials/form_label", { labelInfo: { for: "admin", text: "Password" }})%>
+      <%- include("partials/form_input", { inputInfo: { type: "password", id: "admin", name: "admin"} })%>
       <%- include("partials/form_secret_password", {password: "cooladmin"})%>
     <fieldset>
   <% } %>
