@@ -5,7 +5,11 @@
 <% let attributes = "" %>
 
 <% for (const attribute in inputInfo) { %>
-  <% attributes += `${attribute}="${inputInfo[attribute]}" ` %>
+  <% if (attribute === "required") { %>
+    <% attributes += `${inputInfo[attribute]} `%>
+  <% } else { %>
+    <% attributes += `${attribute}="${inputInfo[attribute]}" ` %>
+  <% } %>
 <% } %>
 
 <input 
