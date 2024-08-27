@@ -2,17 +2,19 @@
  <% throw new Error("Must provide 'btnInfo' object") %> 
 <% } %>
 
-<button class="
-            bg-<%= btnInfo.color%>-600 
-            hover:bg-<%= btnInfo.color%>-700 
-            text-gray-50
-            font-semibold 
-            py-2 
-            px-4 
-            border 
-            border-<%= btnInfo.color%>-600 
-            rounded
-            "
+<button 
+  type="<%=btnInfo.type%>"
+  class="
+    bg-<%= btnInfo.color%>-600 
+    hover:bg-<%= btnInfo.color%>-700 
+    text-gray-50
+    font-semibold 
+    py-2 
+    px-4 
+    border 
+    border-<%= btnInfo.color%>-600 
+    rounded
+    "
   >
   <%= btnInfo.text %>
 </button>
