@@ -57,7 +57,6 @@ exports.sign_up_post = [
       is_admin: false,
       is_member: false,
     };
-    console.log(errors.array());
 
     if (!errors.isEmpty()) {
       res.render("sign-up-form", {
@@ -185,8 +184,8 @@ exports.log_out_get = (req, res, next) => {
   });
 };
 
-// handler for rendering the form for granting user previleges
-exports.previleges_get = (req, res, next) => {
+// handler for rendering the form for granting user privileges
+exports.grant_privileges_get = (req, res, next) => {
   if (!res.locals.currentUser) {
     return res.render("error", {
       title: "Forbiden Route",
@@ -195,26 +194,25 @@ exports.previleges_get = (req, res, next) => {
     });
   }
 
-  res.render("previleges_form", {
-    title: "Gain previleges",
+  res.render("privileges_form", {
+    title: "Gain privileges",
     currentUser: res.locals.currentUser,
     errors: undefined,
   });
 };
 
-// handler for granting previleges to the user
-exports.previleges_post = [
+// handler for granting privileges to the user
+exports.grant_privileges_post = [
   body("member").trim().escape(),
   body("admin").trim().escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const user = res.locals.currentUser;
-    console.log(user);
 
     if (!errors.isEmpty()) {
-      return res.render("previleges_form", {
-        title: "Gain previleges",
+      return res.render("privileges_form", {
+        title: "Gain privileges",
         currentUser: user,
         errors: errors.array(),
       });
@@ -224,7 +222,7 @@ exports.previleges_post = [
     if (req.body.admin) await db.grantPrevilege(user.id, colNames.IS_ADMIN);
 
     if (!user.is_admin) {
-      return res.render("previleges_form", {
+      return res.render("privileges_form", {
         title: "Become an administrator",
         currentUser: user,
         errors: errors.array(),
