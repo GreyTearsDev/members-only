@@ -6,6 +6,14 @@ const passport = require("passport");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
+  if (res.locals.currentUser) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're already logged in",
+    });
+  }
+
   res.render("sign-up-form", {
     title: "Sign up",
     errors: undefined,
@@ -84,6 +92,13 @@ exports.sign_up_post = [
 
 // handler for displaying the log-in form to the user
 exports.log_in_get = (req, res, next) => {
+  if (res.locals.currentUser) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're already logged in",
+    });
+  }
   res.render("log_in_form", {
     title: "Log in",
     errors: undefined,
