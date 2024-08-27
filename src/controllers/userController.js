@@ -3,6 +3,7 @@ const db = require("../db/queries");
 const asyncHandler = require("express-async-handler");
 const colNames = require("../util/colNames");
 const passport = require("passport");
+const bcryptjs = require("bcryptjs");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
@@ -209,6 +210,8 @@ exports.grant_privileges_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const user = res.locals.currentUser;
+    const member_pass = req.body.member;
+    const admin_pass = req.body.admin;
 
     if (!errors.isEmpty()) {
       return res.render("privileges_form", {
@@ -218,15 +221,35 @@ exports.grant_privileges_post = [
       });
     }
 
-    if (req.body.member) await db.grantPrevilege(user.id, colNames.IS_MEMBER);
-    if (req.body.admin) await db.grantPrevilege(user.id, colNames.IS_ADMIN);
+    if (member_pass) {
+      let secret_pass = await db.getSecretPassword(colNames.PASS_MEMBER);
+      let match = await bcryptjs.compare(member_pass, secret_pass);
 
-    if (!user.is_admin) {
-      return res.render("privileges_form", {
-        title: "Become an administrator",
-        currentUser: user,
-        errors: errors.array(),
-      });
+      if (!match) {
+        return res.render("privileges_form", {
+          title: "Become a member",
+          currentUser: user,
+          errors: [{ msg: "Wrong password" }],
+        });
+      }
+
+      await db.grantPrevilege(user.id, colNames.IS_MEMBER);
+      res.redirect("/user/grant-privileges");
+    }
+
+    if (admin_pass) {
+      let secret_pass = await db.getSecretPassword(colNames.PASS_ADMIN);
+      let match = await bcryptjs.compare(admin_pass, secret_pass);
+
+      if (!match) {
+        return res.render("privileges_form", {
+          title: "Become an administrator",
+          currentUser: user,
+          errors: [{ msg: "Wrong password" }],
+        });
+      }
+
+      await db.grantPrevilege(user.id, colNames.IS_ADMIN);
     }
 
     return res.redirect("/");

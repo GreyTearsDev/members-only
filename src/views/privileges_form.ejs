@@ -29,7 +29,7 @@
         mb-4
       "
     >
-      You already have ALL possible privileges... what else could you want?😩
+      You already have ALL possible privileges... what else could you want? 😩
     </h2>
     <a
       href="/"
@@ -117,4 +117,5 @@
       <%- include("partials/form_button", { btnInfo: { text: "Cancel", color: "gray", type: "" } }) %>
     </a>
   <% } %>
+  <%- include("form_error_message", {errors: errors})%>
 </form>
