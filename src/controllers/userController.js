@@ -6,7 +6,6 @@ const passport = require("passport");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
-  console.log(req.user);
   res.render("sign-up-form", {
     title: "Sign up",
     errors: undefined,
@@ -85,6 +84,7 @@ exports.log_in_get = (req, res, next) => {
   res.render("log_in_form", {
     title: "Log in",
     errors: undefined,
+    user: undefined,
     username: undefined,
     password: undefined,
   });
@@ -99,7 +99,6 @@ exports.log_in_post = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.error("there was an error");
       res.render("log_in_form", {
         title: "Oops... Something went wrong!",
         username: req.body.username,
@@ -107,7 +106,6 @@ exports.log_in_post = [
       });
       return;
     }
-    console.log("no errors");
 
     passport.authenticate("local", {
       successRedirect: "/",
@@ -115,3 +113,11 @@ exports.log_in_post = [
     })(req, res, next);
   },
 ];
+
+// handler for validating and logging the user out
+exports.log_out_get = (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
+};

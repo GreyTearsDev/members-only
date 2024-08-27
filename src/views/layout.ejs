@@ -13,18 +13,27 @@
             <a href="/">Ranticulous <span>👁👄👁</span></a>
           </h1>
         </div>
+        
+        <% if (user) { %>
+          <a href="/user/log-out"><button>Log out</button></a>
+        <% } else { %>
+          <a href="/user/log-in"><button>Log in</button></a>
+        <% } %>
     </header>
+
     <aside>
       <%- include("./sidebar") %>
     </aside>
+
     <main>
       <%- body %>
     </main>
-    <footer>
 
+    <footer>
       <p> Copyright©Tirso Samalungo (<a
                 href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
         </p>
     </footer>
+
   </body>
 </html>
