@@ -7,7 +7,7 @@
     p-4
     bg-white
     shadow-md
-    roudend-md
+    rounded-md
   ">
   <% if (!currentUser.is_member) { %>
     <fieldset class="border border-gray-300 rounded p-4 mb-6">
@@ -28,10 +28,10 @@
     <fieldset>
   <% } %>
 
-  <%- include("partials/form_button", { btnInfo: { text: "Confirm", color: "gray", type: "submit" } })%>
+  <%- include("partials/form_button", { btnInfo: { text: "Confirm", color: "pink", type: "submit" } })%>
 
 <a href="/">
-  <%- include("partials/form_button", { btnInfo: { text: "Cancel", color: "pink", type: "" } })%>
+  <%- include("partials/form_button", { btnInfo: { text: "Cancel", color: "gray", type: "" } })%>
 </a>
 </form>
 
