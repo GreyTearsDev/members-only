@@ -1,0 +1,28 @@
+<header class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <!-- Logo and Title -->
+      <div>
+        <h1 class="text-2xl font-bold">
+          <a href="/" class="flex items-center text-white hover:text-pink-400 transition">
+            Ranticulous <span class="ml-2 text-xl">👁👄👁</span>
+          </a>
+        </h1>
+      </div>
+      <!-- Authentication Links -->
+      <div class="flex items-center space-x-4">
+        <% if (currentUser) { %>
+          <a href="/user/log-out" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 border border-pink-600 rounded transition">
+            Log out
+          </a>
+        <% } else { %>
+          <a href="/user/log-in" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 border border-pink-600 rounded transition">
+            Log in
+          </a>
+          <span class="text-gray-300">or</span>
+          <a href="/user/sign-up" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 border border-gray-600 rounded transition">
+            Sign up
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </header>
