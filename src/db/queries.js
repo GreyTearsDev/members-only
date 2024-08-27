@@ -52,3 +52,55 @@ exports.insertUser = async (user) => {
     console.log("Error during insertion: ", e);
   }
 };
+
+exports.grantPrevilege = async (userId, previlegeType) => {
+  const admin_query = `
+    UPDATE users 
+    SET is_admin = true 
+    WHERE id = $1;
+  `;
+  const member_query = `
+    UPDATE users 
+    SET is_member = true 
+    WHERE id = $1;
+  `;
+
+  try {
+    switch (previlegeType) {
+      case colNames.IS_ADMIN:
+        await pool.query(admin_query, [userId]);
+        break;
+      case colNames.IS_MEMBER:
+        await pool.query(member_query, [userId]);
+        break;
+    }
+  } catch (e) {
+    throw new Error("Something when wrong while granting previleges: ", e);
+  }
+};
+
+exports.removePrevilege = async (userId, previlegeType) => {
+  const admin_query = `
+    UPDATE users 
+    SET is_admin = false
+    WHERE id = $1;
+  `;
+  const member_query = `
+    UPDATE users 
+    SET is_member = false 
+    WHERE id = $1;
+  `;
+
+  try {
+    switch (previlegeType) {
+      case colNames.IS_ADMIN:
+        await pool.query(admin_query, [userId]);
+        break;
+      case colNames.IS_MEMBER:
+        await pool.query(member_query, [userId]);
+        break;
+    }
+  } catch (e) {
+    throw new Error("Something when wrong while granting previleges: ", e);
+  }
+};
