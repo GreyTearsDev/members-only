@@ -13,6 +13,7 @@ exports.sign_up_get = (req, res, next) => {
     first_name: undefined,
     last_name: undefined,
     password: undefined,
+    currentUser: res.locals.currentUser,
   });
 };
 
@@ -33,7 +34,7 @@ exports.sign_up_post = [
     .escape()
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error("Passwords do not match");
+        throw new Error("Passwords did not match");
       }
       return true;
     }),
@@ -48,6 +49,7 @@ exports.sign_up_post = [
       is_admin: false,
       is_member: false,
     };
+    console.log(errors.array());
 
     if (!errors.isEmpty()) {
       res.render("sign-up-form", {
@@ -57,6 +59,7 @@ exports.sign_up_post = [
         first_name: user.first_name,
         last_name: user.last_name,
         password: user.password,
+        currentUser: res.locals.currentUser,
       });
       return;
     }
@@ -85,6 +88,7 @@ exports.log_in_get = (req, res, next) => {
     title: "Log in",
     errors: undefined,
     user: undefined,
+    currentUser: res.locals.currentUser,
     username: undefined,
     password: undefined,
   });
@@ -95,26 +99,61 @@ exports.log_in_post = [
   body("username", "Invalid username").trim().notEmpty().escape(),
   body("password", "Invalid password").trim().notEmpty().escape(),
 
-  (req, res, next) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("log_in_form", {
+      return res.render("log_in_form", {
         title: "Oops... Something went wrong!",
         username: req.body.username,
         errors: errors.array(),
+        currentUser: res.locals.currentUser,
       });
-      return;
     }
 
-    passport.authenticate("local", {
-      successRedirect: "/",
-      failureRedirect: "/user/log-in",
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        // Handle unexpected errors
+        return res.render("log_in_form", {
+          title: "Oops... Something went wrong!",
+          username: req.body.username,
+          errors: [
+            { msg: "An unexpected error occurred. Please try again later." },
+          ],
+          currentUser: res.locals.currentUser,
+        });
+      }
+
+      if (!user) {
+        // Handle authentication errors
+        return res.render("log_in_form", {
+          title: "Oops... Something went wrong!",
+          username: req.body.username,
+          errors: [{ msg: info.message || "Authentication failed." }],
+          currentUser: res.locals.currentUser,
+        });
+      }
+
+      req.logIn(user, (err) => {
+        if (err) {
+          // Handle login errors
+          return res.render("log_in_form", {
+            title: "Oops... Something went wrong!",
+            username: req.body.username,
+            errors: [
+              { msg: "An unexpected error occurred. Please try again later." },
+            ],
+            currentUser: res.locals.currentUser,
+          });
+        }
+
+        res.redirect("/");
+      });
     })(req, res, next);
   },
 ];
 
-// handler for validating and logging the user out
+// handler for logging the user out
 exports.log_out_get = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
