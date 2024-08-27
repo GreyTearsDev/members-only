@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon ./src/app.js",
     "debug": "nodemon --inspect ./src/app.js",
-    "populatedb": "node ./db/populate.js"
+    "populatedb": "node ./db/populate.js",
+    "build-css": "npx tailwindcss -i ./src/stylesheets/main.css -o ./public/main.css --watch"
   },
   "keywords": [],
   "author": "",
