@@ -86,7 +86,7 @@ exports.sign_up_post = [
     }
 
     await db.insertUser(user);
-    res.redirect("/");
+    res.redirect("/user/log-in");
   }),
 ];
 
@@ -99,6 +99,7 @@ exports.log_in_get = (req, res, next) => {
       message: "You're already logged in",
     });
   }
+
   res.render("log_in_form", {
     title: "Log in",
     errors: undefined,
@@ -170,8 +171,66 @@ exports.log_in_post = [
 
 // handler for logging the user out
 exports.log_out_get = (req, res, next) => {
+  if (!res.locals.currentUser) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're not logged in",
+    });
+  }
+
   req.logout((err) => {
     if (err) return next(err);
     res.redirect("/");
   });
 };
+
+// handler for rendering the form for granting user previleges
+exports.previleges_get = (req, res, next) => {
+  if (!res.locals.currentUser) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're not logged in",
+    });
+  }
+
+  res.render("previleges_form", {
+    title: "Gain previleges",
+    currentUser: res.locals.currentUser,
+    errors: undefined,
+  });
+};
+
+// handler for granting previleges to the user
+exports.previleges_post = [
+  body("member").trim().escape(),
+  body("admin").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const user = res.locals.currentUser;
+    console.log(user);
+
+    if (!errors.isEmpty()) {
+      return res.render("previleges_form", {
+        title: "Gain previleges",
+        currentUser: user,
+        errors: errors.array(),
+      });
+    }
+
+    if (req.body.member) await db.grantPrevilege(user.id, colNames.IS_MEMBER);
+    if (req.body.admin) await db.grantPrevilege(user.id, colNames.IS_ADMIN);
+
+    if (!user.is_admin) {
+      return res.render("previleges_form", {
+        title: "Become an administrator",
+        currentUser: user,
+        errors: errors.array(),
+      });
+    }
+
+    return res.redirect("/");
+  }),
+];
