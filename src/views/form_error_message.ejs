@@ -1,11 +1,11 @@
   <% if ( errors && errors.length > 0) { %>
-    <div>
-      <ul>
+    <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+      <ul class="list-disc pl-5 space-y-2">
         <% errors.forEach(error => { %>
-          <li>
-            <span>⚠️</span>
-            <%= error.msg %>
-          </li>
+          <li class="flex items-start">
+            <span class="mr-2 text-xl">⚠️</span>
+            <span><%= error.msg %></span>
+          </li>        
         <% }) %>
       </ul>
     </div>
