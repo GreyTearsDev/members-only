@@ -49,7 +49,7 @@ app.set("layout", "layout");
 ----------------------USE MIDDLEWARE FUNCTIONS------------------------
 */
 app.use(express.json()); // sets `Content-type `to `text/plain`it Acept header doesn't contain `applicaiton/json`
-app.use(express.static(path.join(__dirname, "public"))); // sets the directory from which static files will be served
+app.use(express.static(path.join(__dirname, "../public"))); // sets the directory from which static files will be served
 
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
