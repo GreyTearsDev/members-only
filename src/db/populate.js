@@ -1,5 +1,6 @@
 const { argv } = require("node:process");
 const { Pool } = require("pg");
+const bcrypt = require("bcryptjs");
 
 const createUserSessions = `
 CREATE TABLE "user_sessions" (
@@ -27,8 +28,8 @@ const usersTable = `
 
 const secretPasswordsTable = `
   CREATE TABLE IF NOT EXISTS secret_passwords(
-    admin VARCHAR(20) NOT NULL,
-    membership VARCHAR(20) NOT NULL
+    admin TEXT NOT NULL,
+    membership TEXT NOT NULL
   );
 `;
 
@@ -41,18 +42,6 @@ const messagesTable = `
       posted_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
-
-const createDefaultUsers = `
-  INSERT INTO users(username, first_name, last_name, password, is_admin, is_member)
-  VALUES 
-    ('greytearsdev', 'Tirso', 'Samalungo', 'mycoolpass', true, true),
-    ('coolguy', 'Josh', 'Doe', 'notsocoolpass', false, false);
-`;
-
-const createSecretPasswords = `
-  INSERT INTO secret_passwords(admin, membership)
-  VALUES ('cooladmin', 'coolmember');
-`;
 
 const createDefaultMessages = `
   INSERT INTO messages(user_id, title, message)
@@ -79,6 +68,18 @@ async function main() {
   console.log("---Connected--- \n*__________________________________*");
 
   try {
+    const default_user_pass_hashed = await bcrypt.hash("notsocoolpass", 10);
+    const createDefaultUsers = `
+      INSERT INTO users(username, first_name, last_name, password, is_admin, is_member)
+      VALUES 
+        ('coolguy', 'Josh', 'Doe', '${default_user_pass_hashed}', false, false);
+    `;
+    const admin_pass_hashed = await bcrypt.hash("cooladmin", 10);
+    const member_pass_hashed = await bcrypt.hash("coolmember", 10);
+    const createSecretPasswords = `
+    INSERT INTO secret_passwords(admin, membership)
+    VALUES ('${admin_pass_hashed}', '${member_pass_hashed}');
+  `;
     console.log("-----------Creating tables---------------");
     await pool.query(usersTable); // creates a table named `users`
     await pool.query(messagesTable); // creates a table named `messages`
