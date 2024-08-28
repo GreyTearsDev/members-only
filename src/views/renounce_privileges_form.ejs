@@ -1,0 +1,72 @@
+
+<form
+  action="/user/renounce-privileges"
+  method="POST"
+  class="max-w-md mx-auto p-4 bg-white shadow-md rounded-md"
+>
+
+  <% if (!currentUser.is_member && !currentUser.is_admin) { %>
+  
+      <h2 class="text-m mb-4"> You don't have any privilege yet? 🥺</h2>
+      <a href="/user/grant-privileges"
+        class="
+          bg-gray-600 
+          hover:bg-gray-700 
+          text-white 
+          font-semibold 
+          py-2 
+          px-4 
+          border 
+          border-gray-600 
+          rounded
+        "
+      >
+        Get some here
+      </a>
+  <% } else { %>
+    <fieldset class="border border-gray-300 rounded p-4 mb-6">
+      <legend class="text-lg font-semibold text-gray-700">
+        Renounce your privileges
+      </legend>
+
+      <% if (currentUser.is_member) { %>
+        <label 
+          for="member" 
+          class="flex items-center justify-start gap-2 
+                 block text-sm font-medium text-gray-700 mt-4">
+
+          Renounce Member privileges
+
+          <%-include("partials/form_checkbox_input", { checkboxInfo: {
+            id: "member",
+            name: "member",
+            type: "checkbox",
+            checked: currentUser.is_member? 'checked' : '', 
+          }}) %>
+        </label>
+      <% } %>
+
+      <% if (currentUser.is_admin) { %>
+        <label 
+          for="admin" 
+          class="flex items-center justify-start gap-2 
+                 block text-sm font-medium text-gray-700 mt-4">
+
+          Renounce Administrator privileges
+
+          <%-include("partials/form_checkbox_input", { checkboxInfo: {
+            id: "admin",
+            name: "admin",
+            type: "checkbox",
+            checked: currentUser.is_admin ? 'checked' : '', 
+          }}) %>
+        </label>
+      <% } %>
+
+    </fieldset>
+
+    <%- include("partials/form_button", { btnInfo: { text: "Confirm", color: "pink", type: "submit" } }) %>
+
+  <% } %>
+</form>
+

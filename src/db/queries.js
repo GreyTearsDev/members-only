@@ -53,7 +53,7 @@ exports.insertUser = async (user) => {
   }
 };
 
-exports.grantPrevilege = async (userId, previlegeType) => {
+exports.grantPrivileges = async (userId, privilegesType) => {
   const admin_query = `
     UPDATE users 
     SET is_admin = true 
@@ -66,7 +66,7 @@ exports.grantPrevilege = async (userId, previlegeType) => {
   `;
 
   try {
-    switch (previlegeType) {
+    switch (privilegesType) {
       case colNames.IS_ADMIN:
         await pool.query(admin_query, [userId]);
         break;
@@ -75,11 +75,11 @@ exports.grantPrevilege = async (userId, previlegeType) => {
         break;
     }
   } catch (e) {
-    throw new Error("Something when wrong while granting previleges: ", e);
+    throw new Error("Something when wrong while granting privilegess: ", e);
   }
 };
 
-exports.removePrevilege = async (userId, previlegeType) => {
+exports.removePrivileges = async (userId, privilegesType) => {
   const admin_query = `
     UPDATE users 
     SET is_admin = false
@@ -92,7 +92,7 @@ exports.removePrevilege = async (userId, previlegeType) => {
   `;
 
   try {
-    switch (previlegeType) {
+    switch (privilegesType) {
       case colNames.IS_ADMIN:
         await pool.query(admin_query, [userId]);
         break;
@@ -101,7 +101,7 @@ exports.removePrevilege = async (userId, previlegeType) => {
         break;
     }
   } catch (e) {
-    throw new Error("Something when wrong while removing previleges: ", e);
+    throw new Error("Something when wrong while removing privilegess: ", e);
   }
 };
 

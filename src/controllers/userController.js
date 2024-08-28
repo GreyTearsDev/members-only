@@ -233,7 +233,7 @@ exports.grant_privileges_post = [
         });
       }
 
-      await db.grantPrevilege(user.id, colNames.IS_MEMBER);
+      await db.grantPrivileges(user.id, colNames.IS_MEMBER);
       res.redirect("/user/grant-privileges");
     }
 
@@ -249,9 +249,43 @@ exports.grant_privileges_post = [
         });
       }
 
-      await db.grantPrevilege(user.id, colNames.IS_ADMIN);
+      await db.grantPrivileges(user.id, colNames.IS_ADMIN);
     }
 
     return res.redirect("/");
   }),
 ];
+
+exports.renounce_privileges_get = (req, res, next) => {
+  if (!res.locals.currentUser) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're not logged in",
+    });
+  }
+
+  res.render("renounce_privileges_form", {
+    title: "Renounce privileges",
+    currentUser: res.locals.currentUser,
+  });
+};
+
+exports.renounce_privileges_post = asyncHandler(async (req, res, next) => {
+  const user = res.locals.currentUser;
+  const admin_priv = req.body.admin;
+  const member_priv = req.body.member;
+
+  if (!user) {
+    return res.render("error", {
+      title: "Forbiden Route",
+      code: "403",
+      message: "You're not logged in",
+    });
+  }
+
+  if (!member_priv) await db.removePrivileges(user.id, colNames.IS_MEMBER);
+  if (!admin_priv) await db.removePrivileges(user.id, colNames.IS_ADMIN);
+
+  return res.redirect("/");
+});
