@@ -1,0 +1,17 @@
+<% if (!checkboxInfo) { %>
+  <% throw new Error("Must provide 'checkboxInfo' object") %>
+<% } %>
+
+<% let attributes = "" %>
+
+<% for (const attribute in checkboxInfo) { %>
+  <% if (attribute === "checked") { %>
+    <% attributes += `${checkboxInfo[attribute]} `%>
+  <% } else { %>
+    <% attributes += `${attribute}="${checkboxInfo[attribute]}" ` %>
+  <% } %>
+<% } %>
+
+<input 
+  <%- attributes %>
+  class="h-4 w-4">
