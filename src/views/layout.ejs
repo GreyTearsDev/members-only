@@ -6,7 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/main.css">
   </head>
-  <body>
+  <body class="grid
+               grid-cols-[minmax(150px,18rem)_1fr]
+               min-h-screen
+               grid-rows-[auto_1fr_auto]"
+        style="grid-template-rows: 80px 1fr 50px;"
+  >
     <%- include("./header")%>
     <%- include("./sidebar") %>
     <main>
