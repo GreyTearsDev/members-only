@@ -1,23 +1,9 @@
 <form
   action="/user/grant-privileges"
   method="POST"
-  class="
-    max-w-md
-    mx-auto
-    p-4
-    bg-white
-    shadow-md
-    rounded-md
-  "
+  class="max-w-md mx-auto p-4 bg-white shadow-md rounded-md"
 >
-  <h1 
-    class="
-      text-lg 
-      font-semibold 
-      text-gray-800 
-      mb-4
-    "
-  >
+  <h1 class="text-lg font-semibold text-gray-800 mb-4">
     Current privileges:
      Member <%= currentUser.is_member ? "✅" : "❌" %> | Administrator <%= currentUser.is_admin ? "✅" : "❌" %>
   </h1>
