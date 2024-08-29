@@ -2,7 +2,7 @@
 <form
   action="/user/renounce-privileges"
   method="POST"
-  class="max-w-md mx-auto p-4 bg-white shadow-md rounded-md"
+  class="max-w-md mx-auto p-4 mt-10 bg-white shadow-md rounded-md"
 >
 
   <% if (!currentUser.is_member && !currentUser.is_admin) { %>
@@ -35,7 +35,7 @@
           class="flex items-center justify-start gap-2 
                  block text-sm font-medium text-gray-700 mt-4">
 
-          Renounce Member privileges
+          Renounce Membership privileges
 
           <%-include("partials/form_checkbox_input", { checkboxInfo: {
             id: "member",
