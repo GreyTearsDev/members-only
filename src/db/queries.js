@@ -1,6 +1,7 @@
 const pool = require("./index");
 const bcryptjs = require("bcryptjs");
 const colNames = require("../util/colNames");
+const date = require("../util/date_formatting");
 
 exports.getUserBy = async (column, value) => {
   let result;
@@ -122,5 +123,67 @@ exports.getSecretPassword = async (columnName) => {
     }
   } catch (e) {
     throw new Error("Something when wrong while fetching secret password: ", e);
+  }
+};
+
+exports.getAllMessages = async () => {
+  const messagesQueryText = `
+    SELECT * FROM messages ORDER BY posted_on;
+  `;
+  const usersQueryText = `
+    SELECT * FROM users ORDER BY id;
+  `;
+
+  try {
+    const messagesQueryResult = await pool.query(messagesQueryText);
+    const usersQueryResult = await pool.query(usersQueryText);
+    const users = usersQueryResult.rows;
+    const rawMessages = messagesQueryResult.rows;
+
+    return rawMessages.map((message) => {
+      const user = users.find((u) => (u.id = message.user_id));
+
+      if (!user) {
+        throw new Error("Something went wrong wile fetching the user");
+      }
+
+      message.username = user.username;
+      message.user_is_admin = user.is_admin;
+      message.user_is_member = user.is_member;
+      message.posted_on = date.formJSDateToStringDMY(message.posted_on);
+
+      return message;
+    });
+  } catch (e) {
+    console.error("Something went wrong while fetching the messages: ", e);
+  }
+};
+
+exports.addNewMessage = async (title, message, user_id) => {
+  const queryText = `
+    INSERT INTO messages(title, message, user_id)
+    VALUES ($1, $2, $3);
+  `;
+  try {
+    return await pool.query(queryText, [title, message, user_id]);
+  } catch (e) {
+    console.error(
+      "Something went wrong while adding the message to the DB: ",
+      e,
+    );
+  }
+};
+
+exports.deleteMessage = async (message_id) => {
+  const queryText = `
+    DELETE FROM messages WHERE id = $1
+  `;
+  try {
+    return await pool.query(queryText, [message_id]);
+  } catch (e) {
+    console.error(
+      "Something went wrong while deleting a message from the DB: ",
+      e,
+    );
   }
 };

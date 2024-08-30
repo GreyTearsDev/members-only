@@ -1,0 +1,57 @@
+<section class="px-8 py-10 max-w-3xl mx-auto">
+  <form 
+    action="/messages/post" 
+    method="POST" 
+    class="mb-8 bg-white p-6 rounded-md shadow-md">
+
+    <section class="mb-4">
+      <%-include("partials/form_input", {inputInfo: {placeholder: "Title", id: "title", name: "title", value: rantTitle ? rantTitle : ''}})%>
+      <textarea
+        id="message" 
+        name="message" 
+        rows="5" 
+        class="mt-2 w-full border border-gray-300 rounded-md p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+        placeholder="Rant about something"
+        value= <%= rantContent ? rantContent : ''%>
+       ></textarea>
+    </section>
+
+    <% if (currentUser) { %>
+      <%- include("partials/form_button", {btnInfo: {text: "Post", color: "pink", type: "submit"}}) %>
+    <% } else { %>
+    <h2 class="text-m mt-4">
+      You need to <a href="/user/log-in" class="text-pink-600"> Log in</a> before you can post a rant.
+    </h2>
+      
+    <% } %>
+
+  <%- include("form_error_message", { errors: errors }) %>
+  </form>
+
+  <% if (messages.length === 0) { %>
+    <h1 class="text-center text-gray-700 font-bold text-xl mt-10">There are no rants yet</h1>  
+  <% } else { %>
+    <% messages.forEach(m => { %>
+
+    <article class="mb-6 p-4 border border-gray-200 rounded-md shadow-md bg-white">
+      <p class="text-sm text-gray-500 mb-2">by: <span class="font-semibold"><%= currentUser.is_member ? m.username : 'Anonymous'%></span> 
+      <span class="italic text-gray-400">
+        <%= m.user_is_member ? 'member' : '' %>
+        <%= m.user_is_admin ? ', admin' : '' %>
+      </span>
+      on <%= m.posted_on%></p>
+
+      
+      <form action="/messages/delete" method="POST">
+        <h2 class="font-bold text-lg text-gray-800 mb-1"><%= m.title %></h2>
+        <p class="text-gray-700 mb-4"><%=m.message%></p>
+        <input hidden name="message_id" id="message_id" value=<%= m.id%>>
+
+        <% if (currentUser && currentUser.is_admin) { %>
+          <%- include("partials/form_button", {btnInfo: {text: "Delete", color: "pink", type: "submit"}}) %>
+        <% } %>
+      </form>
+    </article>
+    <% }) %>
+  <% } %>
+</section>
