@@ -39,7 +39,7 @@
         <%= m.user_is_member ? 'member' : '' %>
         <%= m.user_is_admin ? ', admin' : '' %>
       </span>
-      on <%= m.posted_on%></p>
+      <%= currentUser.is_member ? `on ${m.posted_on}` : ''%></p>
 
       
       <form action="/messages/delete" method="POST">
