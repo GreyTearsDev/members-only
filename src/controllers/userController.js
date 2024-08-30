@@ -118,6 +118,14 @@ exports.log_in_post = [
   async (req, res, next) => {
     const errors = validationResult(req);
 
+    if (res.locals.currentUser) {
+      return res.render("error", {
+        title: "Forbiden Route",
+        code: "403",
+        message: "You're already logged in",
+      });
+    }
+
     if (!errors.isEmpty()) {
       return res.render("log_in_form", {
         title: "Oops... Something went wrong!",
@@ -212,6 +220,14 @@ exports.grant_privileges_post = [
     const user = res.locals.currentUser;
     const member_pass = req.body.member;
     const admin_pass = req.body.admin;
+
+    if (!res.locals.currentUser) {
+      return res.render("error", {
+        title: "Forbiden Route",
+        code: "403",
+        message: "You're not logged in",
+      });
+    }
 
     if (!errors.isEmpty()) {
       return res.render("privileges_form", {
