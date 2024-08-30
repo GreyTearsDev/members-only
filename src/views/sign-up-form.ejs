@@ -108,6 +108,11 @@
       </fieldset>
 
     <%- include("partials/form_button", { btnInfo: { text: "Sign up", color: "pink", type: "submit" } })%>
+
+    <h2 class="text-m mt-4">
+      Already have an account? <a href="/user/log-in" class="text-pink-600"> Log in now!</a>
+    </h2>
+
     <%- include("form_error_message", {errors: errors})%>
 </form>
 
