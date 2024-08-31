@@ -105,8 +105,15 @@ app.use("/user", userRouter);
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = process.env.NODE_ENV === "development" ? err : {};
 
+  if (process.env.NODE_ENV === "production") {
+    return res.render("error", {
+      code: 500,
+      title: "Something blew up",
+      error: { message: "We are trying to figure out what happended..." },
+    });
+  }
   // render the error page
   res.status(err.status || 500);
   res.render("error", { code: 500, title: "Something blew up", error: err });
