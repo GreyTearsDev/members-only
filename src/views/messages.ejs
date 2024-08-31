@@ -34,12 +34,12 @@
     <% messages.forEach(m => { %>
 
     <article class="mb-6 p-4 border border-gray-200 rounded-md shadow-md bg-white">
-      <p class="text-sm text-gray-500 mb-2">by: <span class="font-semibold"><%= currentUser.is_member ? m.username : 'Anonymous'%></span> 
+      <p class="text-sm text-gray-500 mb-2">by: <span class="font-semibold"><%= currentUser && currentUser.is_member ? m.username : 'Anonymous'%></span> 
       <span class="italic text-gray-400">
         <%= m.user_is_member ? 'member' : '' %>
         <%= m.user_is_admin ? ', admin' : '' %>
       </span>
-      <%= currentUser.is_member ? `on ${m.posted_on}` : ''%></p>
+      <%= currentUser && currentUser.is_member ? `on ${m.posted_on}` : ''%></p>
 
       
       <form action="/messages/delete" method="POST">
