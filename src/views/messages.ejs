@@ -5,14 +5,14 @@
     class="mb-8 bg-white p-6 rounded-md shadow-md">
 
     <section class="mb-4">
-      <%-include("partials/form_input", {inputInfo: {placeholder: "Title", id: "title", name: "title", value: rantTitle || ''}})%>
+      <%-include("partials/form_input", {inputInfo: {placeholder: "Title", id: "title", name: "title", value: rantTitle ? rantTitle : ''}})%>
       <textarea
         id="message" 
         name="message" 
         rows="5" 
         class="mt-2 w-full border border-gray-300 rounded-md p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
         placeholder="Rant about something"
-        value= <%= rantContent || rantContent%>
+        value= <%= rantContent ? rantContent : ''%>
        ></textarea>
     </section>
 
