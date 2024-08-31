@@ -97,9 +97,9 @@ app.use("/", indexRouter);
 app.use("/messages", messagesRouter);
 app.use("/user", userRouter);
 
-// app.use((req, res, next) => {
-//   next(createError(404));
-// });
+app.use((req, res, next) => {
+  next(createError(404));
+});
 
 // error handler
 app.use(function (err, req, res, next) {
@@ -111,7 +111,7 @@ app.use(function (err, req, res, next) {
     return res.render("error", {
       code: 500,
       title: "Something blew up",
-      error: { message: "We are trying to figure out what happended..." },
+      message: "We are trying to figure out what happended...",
     });
   }
   // render the error page
