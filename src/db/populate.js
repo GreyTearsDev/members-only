@@ -64,7 +64,9 @@ async function main() {
   );
   const pool = new Pool({
     connectionString: argv[2],
-    ssl: argv[2] ? true : false,
+    ssl: {
+      require: true,
+    },
   });
   console.log("---Connected--- \n*__________________________________*");
 
