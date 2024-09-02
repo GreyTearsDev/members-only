@@ -247,7 +247,7 @@ exports.grant_privileges_post = [
 ];
 
 exports.renounce_privileges_get = (req, res, next) => {
-  const user = res.locals.currentuser;
+  const user = res.locals.currentUser;
 
   if (!user) return next(Error.notLoggedIn());
 
