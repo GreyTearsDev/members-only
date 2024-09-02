@@ -259,13 +259,18 @@ exports.renounce_privileges_get = (req, res, next) => {
 
 exports.renounce_privileges_post = asyncHandler(async (req, res, next) => {
   const user = res.locals.currentUser;
-  const admin_priv = req.body.admin;
-  const member_priv = req.body.member;
-
   if (!user) return next(Error.notLoggedIn());
 
-  if (!member_priv) await db.removePrivileges(user.id, colNames.IS_MEMBER);
-  if (!admin_priv) await db.removePrivileges(user.id, colNames.IS_ADMIN);
+  const member_priv = req.body.member;
+  const admin_priv = req.body.admin;
+
+  if (!member_priv) {
+    // if the user renounces membership privileges, remove admin privileges as well
+    await db.removePrivileges(user.id, colNames.IS_MEMBER);
+    await db.removePrivileges(user.id, colNames.IS_ADMIN);
+  } else if (!admin_priv) {
+    await db.removePrivileges(user.id, colNames.IS_ADMIN);
+  }
 
   return res.redirect("/");
 });

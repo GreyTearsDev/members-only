@@ -16,13 +16,20 @@
        ></textarea>
     </section>
 
+    
     <% if (currentUser) { %>
-      <%- include("partials/form_button", {btnInfo: {text: "Post", color: "pink", type: "submit"}}) %>
-    <% } else { %>
-    <h2 class="text-m mt-4">
-      You need to <a href="/user/log-in" class="text-pink-600"> Log in</a> before you can post a rant.
-    </h2>
-      
+      <% if (currentUser.is_member) { %>
+        <%- include("partials/form_button", {btnInfo: {text: "Post", color: "pink", type: "submit"}}) %>
+      <% } else { %>
+      <h2 class="text-m mt-4">
+        You need either Member or Administrator privileges to post a rant.</br> 
+        Get privileges <a href="/user/grant-privileges" class="text-pink-600">here</a>.
+      </h2>
+      <% } %>
+    <% } else {%>
+      <h2 class="text-m mt-4">
+        You need to <a href="/user/log-in" class="text-pink-600"> Log in</a> before you can post a rant.
+      </h2>
     <% } %>
 
   <%- include("form_error_message", { errors: errors }) %>
