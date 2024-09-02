@@ -4,7 +4,6 @@ const app = express();
 const path = require("path");
 const userRouter = require("./routes/userRouter");
 const http = require("http");
-const createError = require("http-errors");
 
 const expressLayouts = require("express-ejs-layouts");
 const indexRouter = require("./routes/indexRouter");
@@ -18,6 +17,7 @@ const LocalStrategy = require("passport-local");
 const bcryptjs = require("bcryptjs");
 const db = require("./db/queries");
 const colNames = require("./util/colNames");
+const Error = require("./util/error_handlers/customErrorHandler");
 
 /**
 ----------------------SET UP EXPRESS-SESSION MIDDLEWARE------------------------
@@ -98,25 +98,16 @@ app.use("/messages", messagesRouter);
 app.use("/user", userRouter);
 
 app.use((req, res, next) => {
-  next(createError(404));
+  return next(Error.pageNotFound());
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV === "development" ? err : {};
-
-  if (process.env.NODE_ENV === "production") {
-    return res.render("error", {
-      code: 500,
-      title: "Something blew up",
-      message: "We are trying to figure out what happended...",
-    });
-  }
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error", { code: 500, title: "Something blew up", error: err });
+  return res.render("error", {
+    code: err.status,
+    title: err.title,
+    message: err.message,
+  });
 });
 
 /**

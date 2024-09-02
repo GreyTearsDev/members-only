@@ -2,6 +2,7 @@ const pool = require("./index");
 const bcryptjs = require("bcryptjs");
 const colNames = require("../util/colNames");
 const date = require("../util/date_formatting");
+const Error = require("../util/error_handlers/customErrorHandler");
 
 exports.getUserBy = async (column, value) => {
   let result;
@@ -26,7 +27,7 @@ exports.getUserBy = async (column, value) => {
         return result.rows[0];
     }
   } catch (e) {
-    console.log(e);
+    return Error.internalError();
   }
 };
 
@@ -50,7 +51,7 @@ exports.insertUser = async (user) => {
       user.is_member,
     ]);
   } catch (e) {
-    console.log("Error during insertion: ", e);
+    return Error.internalError();
   }
 };
 
@@ -76,7 +77,7 @@ exports.grantPrivileges = async (userId, privilegesType) => {
         break;
     }
   } catch (e) {
-    throw new Error("Something when wrong while granting privilegess: ", e);
+    return Error.internalError();
   }
 };
 
@@ -102,7 +103,7 @@ exports.removePrivileges = async (userId, privilegesType) => {
         break;
     }
   } catch (e) {
-    throw new Error("Something when wrong while removing privilegess: ", e);
+    return Error.internalError();
   }
 };
 
@@ -122,7 +123,7 @@ exports.getSecretPassword = async (columnName) => {
         return result.rows[0].password;
     }
   } catch (e) {
-    throw new Error("Something when wrong while fetching secret password: ", e);
+    return Error.internalError();
   }
 };
 
@@ -144,7 +145,7 @@ exports.getAllMessages = async () => {
       const user = users.find((u) => (u.id = message.user_id));
 
       if (!user) {
-        throw new Error("Something went wrong wile fetching the user");
+        return Error.internalError();
       }
 
       message.username = user.username;
@@ -155,7 +156,7 @@ exports.getAllMessages = async () => {
       return message;
     });
   } catch (e) {
-    console.error("Something went wrong while fetching the messages: ", e);
+    return Error.internalError();
   }
 };
 
@@ -167,10 +168,7 @@ exports.addNewMessage = async (title, message, user_id) => {
   try {
     return await pool.query(queryText, [title, message, user_id]);
   } catch (e) {
-    console.error(
-      "Something went wrong while adding the message to the DB: ",
-      e,
-    );
+    return Error.internalError();
   }
 };
 
@@ -181,9 +179,6 @@ exports.deleteMessage = async (message_id) => {
   try {
     return await pool.query(queryText, [message_id]);
   } catch (e) {
-    console.error(
-      "Something went wrong while deleting a message from the DB: ",
-      e,
-    );
+    return Error.internalError();
   }
 };

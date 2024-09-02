@@ -4,16 +4,13 @@ const asyncHandler = require("express-async-handler");
 const colNames = require("../util/colNames");
 const passport = require("passport");
 const bcryptjs = require("bcryptjs");
+const Error = require("../util/error_handlers/customErrorHandler");
 
 // handler for displaying the sign-up form to the user
 exports.sign_up_get = (req, res, next) => {
-  if (res.locals.currentUser) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're already logged in",
-    });
-  }
+  const user = res.locals.currentUser;
+
+  if (user) return next(Error.alreadyLoggedIn());
 
   res.render("sign-up-form", {
     title: "Sign up",
@@ -22,7 +19,7 @@ exports.sign_up_get = (req, res, next) => {
     first_name: undefined,
     last_name: undefined,
     password: undefined,
-    currentUser: res.locals.currentUser,
+    currentUser: user,
   });
 };
 
@@ -92,19 +89,15 @@ exports.sign_up_post = [
 
 // handler for displaying the log-in form to the user
 exports.log_in_get = (req, res, next) => {
-  if (res.locals.currentUser) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're already logged in",
-    });
-  }
+  const user = res.locals.currentUser;
+
+  if (user) return next(Error.alreadyLoggedIn());
 
   res.render("log_in_form", {
     title: "Log in",
     errors: undefined,
     user: undefined,
-    currentUser: res.locals.currentUser,
+    currentUser: user,
     username: undefined,
     password: undefined,
   });
@@ -116,22 +109,17 @@ exports.log_in_post = [
   body("password", "Invalid password").trim().notEmpty().escape(),
 
   async (req, res, next) => {
+    const currentUser = res.locals.currentUser;
     const errors = validationResult(req);
 
-    if (res.locals.currentUser) {
-      return res.render("error", {
-        title: "Forbiden Route",
-        code: "403",
-        message: "You're already logged in",
-      });
-    }
+    if (currentUser) return next(Error.alreadyLoggedIn());
 
     if (!errors.isEmpty()) {
       return res.render("log_in_form", {
         title: "Oops... Something went wrong!",
         username: req.body.username,
         errors: errors.array(),
-        currentUser: res.locals.currentUser,
+        currentUser: user,
       });
     }
 
@@ -144,7 +132,7 @@ exports.log_in_post = [
           errors: [
             { msg: "An unexpected error occurred. Please try again later." },
           ],
-          currentUser: res.locals.currentUser,
+          currentUser: currentUser,
         });
       }
 
@@ -154,7 +142,7 @@ exports.log_in_post = [
           title: "Oops... Something went wrong!",
           username: req.body.username,
           errors: [{ msg: info.message || "Authentication failed." }],
-          currentUser: res.locals.currentUser,
+          currentUser: currentUser,
         });
       }
 
@@ -167,7 +155,7 @@ exports.log_in_post = [
             errors: [
               { msg: "An unexpected error occurred. Please try again later." },
             ],
-            currentUser: res.locals.currentUser,
+            currentUser: currentUser,
           });
         }
 
@@ -179,13 +167,9 @@ exports.log_in_post = [
 
 // handler for logging the user out
 exports.log_out_get = (req, res, next) => {
-  if (!res.locals.currentUser) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're not logged in",
-    });
-  }
+  const user = res.locals.currentUser;
+
+  if (user) return next(Error.notLoggedIn());
 
   req.logout((err) => {
     if (err) return next(err);
@@ -195,17 +179,13 @@ exports.log_out_get = (req, res, next) => {
 
 // handler for rendering the form for granting user privileges
 exports.grant_privileges_get = (req, res, next) => {
-  if (!res.locals.currentUser) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're not logged in",
-    });
-  }
+  const user = res.locals.currentUser;
+
+  if (!user) return next(Error.notLoggedIn());
 
   res.render("privileges_form", {
     title: "Gain privileges",
-    currentUser: res.locals.currentUser,
+    currentUser: user,
     errors: undefined,
   });
 };
@@ -221,13 +201,7 @@ exports.grant_privileges_post = [
     const member_pass = req.body.member;
     const admin_pass = req.body.admin;
 
-    if (!res.locals.currentUser) {
-      return res.render("error", {
-        title: "Forbiden Route",
-        code: "403",
-        message: "You're not logged in",
-      });
-    }
+    if (!user) return next(Error.notLoggedIn());
 
     if (!errors.isEmpty()) {
       return res.render("privileges_form", {
@@ -273,17 +247,13 @@ exports.grant_privileges_post = [
 ];
 
 exports.renounce_privileges_get = (req, res, next) => {
-  if (!res.locals.currentUser) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're not logged in",
-    });
-  }
+  const user = res.locals.currentuser;
+
+  if (!user) return next(Error.notLoggedIn());
 
   res.render("renounce_privileges_form", {
     title: "Renounce privileges",
-    currentUser: res.locals.currentUser,
+    currentUser: user,
   });
 };
 
@@ -292,13 +262,7 @@ exports.renounce_privileges_post = asyncHandler(async (req, res, next) => {
   const admin_priv = req.body.admin;
   const member_priv = req.body.member;
 
-  if (!user) {
-    return res.render("error", {
-      title: "Forbiden Route",
-      code: "403",
-      message: "You're not logged in",
-    });
-  }
+  if (!user) return next(Error.notLoggedIn());
 
   if (!member_priv) await db.removePrivileges(user.id, colNames.IS_MEMBER);
   if (!admin_priv) await db.removePrivileges(user.id, colNames.IS_ADMIN);
