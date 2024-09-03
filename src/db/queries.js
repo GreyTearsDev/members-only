@@ -142,7 +142,7 @@ exports.getAllMessages = async () => {
     const rawMessages = messagesQueryResult.rows;
 
     return rawMessages.map((message) => {
-      const user = users.find((u) => (u.id = message.user_id));
+      const user = users.find((u) => u.id === message.user_id);
 
       if (!user) {
         return Error.internalError();
