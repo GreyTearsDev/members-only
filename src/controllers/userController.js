@@ -169,7 +169,7 @@ exports.log_in_post = [
 exports.log_out_get = (req, res, next) => {
   const user = res.locals.currentUser;
 
-  if (user) return next(Error.notLoggedIn());
+  if (!user) return next(Error.notLoggedIn());
 
   req.logout((err) => {
     if (err) return next(err);
